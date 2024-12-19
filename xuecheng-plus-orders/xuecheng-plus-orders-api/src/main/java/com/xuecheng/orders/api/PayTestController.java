@@ -37,6 +37,7 @@ public class PayTestController {
     @Value("${pay.alipay.ALIPAY_PUBLIC_KEY}")
     String ALIPAY_PUBLIC_KEY;
 
+    //下单接口测试
     @RequestMapping("/alipaytest")
     public void doPost(HttpServletRequest httpRequest,
                        HttpServletResponse httpResponse) throws ServletException, IOException, AlipayApiException {
@@ -46,7 +47,7 @@ public class PayTestController {
 //        alipayRequest.setReturnUrl("http://domain.com/CallBack/return_url.jsp");
         alipayRequest.setNotifyUrl("http://tjxt-user-t.itheima.net/xuecheng/orders/paynotify");//在公共参数中设置回跳和通知地址
         alipayRequest.setBizContent("{" +
-                "    \"out_trade_no\":\"20230320010102005\"," +
+                "    \"out_trade_no\":\"202303200101020011\"," +
                 "    \"total_amount\":0.1," +
                 "    \"subject\":\"Iphone14 16G\"," +
                 "    \"product_code\":\"QUICK_WAP_WAY\"" +
@@ -57,7 +58,8 @@ public class PayTestController {
         httpResponse.getWriter().flush();
     }
 
-    @PostMapping("/paynotify")
+    //支付结果通知
+    @PostMapping("/paynotifytest")
     public void paynotify(HttpServletRequest request,HttpServletResponse response) throws IOException, AlipayApiException {
 
         //获取支付宝POST过来反馈信息
@@ -80,14 +82,11 @@ public class PayTestController {
         //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
         //计算得出通知验证结果
         //boolean AlipaySignature.rsaCheckV1(Map<String, String> params, String publicKey, String charset, String sign_type)
-        boolean verify_result = AlipaySignature.rsaCheckV1(params, APP_PRIVATE_KEY, AlipayConfig.CHARSET, "RSA2");
+        boolean verify_result = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, "RSA2");
 
         if(verify_result){//验证成功
             //////////////////////////////////////////////////////////////////////////////////////////
             //请在这里加上商户的业务逻辑程序代码
-
-            //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
-
             //商户订单号
 
             String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
@@ -99,6 +98,7 @@ public class PayTestController {
             String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
 
 
+            //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
 
             if(trade_status.equals("TRADE_FINISHED")){
                 //判断该笔订单是否在商户网站中已经做过处理
