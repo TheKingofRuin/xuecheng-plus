@@ -10,7 +10,6 @@ import lombok.ToString;
  * @date 2024/12/11  15:37
  */
 @Data
-@ToString
 public class QueryCourseParamsDto {
 
     //审核状态

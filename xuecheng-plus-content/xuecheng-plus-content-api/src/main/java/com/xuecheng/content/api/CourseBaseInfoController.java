@@ -21,7 +21,7 @@ import java.util.List;
  * @description TODO
  * @date 2024/12/11  15:44
  */
-@Api(value = "课程信息管理接口",tags = "课程信息管理接口")
+@Api(value = "课程信息管理接口", tags = "课程信息管理接口")
 @RestController
 public class CourseBaseInfoController {
 
@@ -33,10 +33,9 @@ public class CourseBaseInfoController {
         CourseBase courseBase = new CourseBase();
         courseBase.setName("测试名称");
         courseBase.setCreateDate(LocalDateTime.now());
-        List<CourseBase> courseBases = new ArrayList();
+        List<CourseBase> courseBases = new ArrayList<>();
         courseBases.add(courseBase);
-        PageResult pageResult = new PageResult<CourseBase>(courseBases,10,1,10);
-        return pageResult;
+        return new PageResult<>(courseBases, 10, 1, 10);
 
     }
 }
