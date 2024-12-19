@@ -1,9 +1,13 @@
 package com.xuecheng.content.api;
 
+import com.alibaba.fastjson.JSON;
+import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.CoursePreviewDto;
+import com.xuecheng.content.model.dto.TeachplanDto;
 import com.xuecheng.content.model.po.CoursePublish;
 import com.xuecheng.content.service.CoursePublishService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 /**
  * @author Mr.M
  * @version 1.0
- * @description TODO
+ * @description 课程发布相关接口
  * @date 2023/2/21 9:28
  */
 @Controller
@@ -23,6 +29,32 @@ public class CoursePublishController {
 
     @Autowired
     CoursePublishService coursePublishService;
+
+
+    @ApiOperation("获取课程发布信息")
+    @ResponseBody
+    @GetMapping("/course/whole/{courseId}")
+    public CoursePreviewDto getCoursePublish(@PathVariable("courseId") Long courseId) {
+        //封装数据
+        CoursePreviewDto coursePreviewDto = new CoursePreviewDto();
+
+        //查询课程发布表
+        CoursePublish coursePublish = coursePublishService.getCoursePublish(courseId);
+        if(coursePublish == null){
+            return coursePreviewDto;
+        }
+        //开始向coursePreviewDto填充数据
+        CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
+        BeanUtils.copyProperties(coursePublish,courseBaseInfoDto);
+        //课程计划信息
+        String teachplanJson = coursePublish.getTeachplan();
+        //转成List<TeachplanDto>
+        List<TeachplanDto> teachplanDtos = JSON.parseArray(teachplanJson, TeachplanDto.class);
+        coursePreviewDto.setCourseBase(courseBaseInfoDto);
+        coursePreviewDto.setTeachplans(teachplanDtos);
+        return coursePreviewDto;
+
+    }
 
 
     @GetMapping("/coursepreview/{courseId}")
