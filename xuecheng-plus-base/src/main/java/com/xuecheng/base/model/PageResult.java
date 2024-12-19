@@ -7,12 +7,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author ZYX
+ * @author Mr.M
  * @version 1.0
  * @description 分页查询结果模型类
- * @date 2024/12/11  15:40
+ * @date 2023/2/11 15:40
  */
 @Data
+@ToString
 public class PageResult<T> implements Serializable {
 
     // 数据列表
